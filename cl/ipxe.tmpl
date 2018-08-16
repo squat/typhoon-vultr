@@ -1,0 +1,5 @@
+#!ipxe
+
+kernel ${kernel} initrd=${flavor}_production_pxe_image.cpio.gz ${flavor}.config.url=http://169.254.169.254/user-data/user-data ${flavor}.first_boot=yes console=tty0 console=ttyS0 ${kernel_args}
+initrd ${initrd}
+boot
