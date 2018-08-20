@@ -25,35 +25,35 @@ data "template_file" "ipxe" {
   }
 }
 
-data "ct_config" "container-linux-install-configs" {
-  count = "${var.controller_count + var.worker_count}"
+data "ct_config" "controller_container_linux_install_configs" {
+  count = "${var.controller_count}"
 
   pretty_print = false
-  content      = "${element(data.template_file.container-linux-install-configs.*.rendered, count.index)}"
+  content      = "${element(data.template_file.controller_container_linux_install_configs.*.rendered, count.index)}"
 }
 
-data "template_file" "container-linux-install-configs" {
-  count = "${var.controller_count + var.worker_count}"
+data "template_file" "controller_container_linux_install_configs" {
+  count = "${var.controller_count}"
 
   template = "${file("${path.module}/cl/install.yaml.tmpl")}"
 
   vars {
     os_flavor          = "${local.flavor}"
     os_channel         = "${local.channel}"
-    ignition           = "${element(concat(data.ct_config.controller-ignitions.*.rendered, data.ct_config.worker-ignitions.*.rendered), count.index)}"
+    ignition           = "${element(data.ct_config.controller_ignitions.*.rendered, count.index)}"
     install_disk       = "${var.install_disk}"
     ssh_authorized_key = "${var.ssh_authorized_key}"
   }
 }
 
-data "ct_config" "controller-ignitions" {
+data "ct_config" "controller_ignitions" {
   count        = "${var.controller_count}"
-  content      = "${element(data.template_file.controller-configs.*.rendered, count.index)}"
+  content      = "${element(data.template_file.controller_configs.*.rendered, count.index)}"
   pretty_print = false
   snippets     = ["${var.controller_clc_snippets}"]
 }
 
-data "template_file" "controller-configs" {
+data "template_file" "controller_configs" {
   count = "${var.controller_count}"
 
   template = "${file("${path.module}/cl/controller.yaml.tmpl")}"
@@ -66,29 +66,8 @@ data "template_file" "controller-configs" {
 
     # etcd0=https://cluster-etcd0.example.com,etcd1=https://cluster-etcd1.example.com,...
     etcd_initial_cluster  = "${join(",", formatlist("%s=https://%s:2380", null_resource.repeat.*.triggers.name, null_resource.repeat.*.triggers.domain))}"
-    k8s_dns_service_ip    = "${module.bootkube.kube_dns_service_ip}"
-    cluster_domain_suffix = "${var.cluster_domain_suffix}"
-    ssh_authorized_key    = "${var.ssh_authorized_key}"
-    network_prefix        = "${element(split("/", vultr_network.cluster.cidr_block), 1)}"
-  }
-}
-
-data "ct_config" "worker-ignitions" {
-  count        = "${var.worker_count}"
-  content      = "${element(data.template_file.worker-configs.*.rendered, count.index)}"
-  pretty_print = false
-  snippets     = ["${var.worker_clc_snippets}"]
-}
-
-data "template_file" "worker-configs" {
-  count = "${var.worker_count}"
-
-  template = "${file("${path.module}/cl/worker.yaml.tmpl")}"
-
-  vars {
-    # Cannot use cyclic dependencies on workers or their DNS records
-    domain_name           = "${var.cluster_name}-worker${count.index}.${var.dns_zone}"
-    k8s_dns_service_ip    = "${module.bootkube.kube_dns_service_ip}"
+    k8s_dns_service_ip    = "${module.bootkube.cluster_dns_service_ip}"
+    kubeconfig            = "${indent(10, module.bootkube.kubeconfig)}"
     cluster_domain_suffix = "${var.cluster_domain_suffix}"
     ssh_authorized_key    = "${var.ssh_authorized_key}"
     network_prefix        = "${element(split("/", vultr_network.cluster.cidr_block), 1)}"

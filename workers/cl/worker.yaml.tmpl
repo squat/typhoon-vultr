@@ -5,15 +5,6 @@ systemd:
       enable: true
     - name: locksmithd.service
       mask: true
-    - name: kubelet.path
-      enable: true
-      contents: |
-        [Unit]
-        Description=Watch for kubeconfig
-        [Path]
-        PathExists=/etc/kubernetes/kubeconfig
-        [Install]
-        WantedBy=multi-user.target
     - name: wait-for-dns.service
       enable: true
       contents: |
@@ -28,6 +19,7 @@ systemd:
         [Install]
         RequiredBy=kubelet.service
     - name: kubelet.service
+      enabled: true
       contents: |
         [Unit]
         Description=Kubelet via Hyperkube
@@ -75,9 +67,14 @@ systemd:
         RestartSec=5
         [Install]
         WantedBy=multi-user.target
-
 storage:
   files:
+    - path: /etc/kubernetes/kubeconfig
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          ${kubeconfig}
     - path: /etc/kubernetes/kubelet.env
       filesystem: root
       mode: 0644

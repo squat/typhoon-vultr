@@ -38,7 +38,7 @@ resource "vultr_instance" "controllers" {
   name               = "${var.cluster_name}-controller-${count.index}"
   tag                = "${var.cluster_name}"
   firewall_group_id  = "${vultr_firewall_group.cluster.id}"
-  user_data          = "${element(data.ct_config.container-linux-install-configs.*.rendered, count.index)}"
+  user_data          = "${element(data.ct_config.controller_container_linux_install_configs.*.rendered, count.index)}"
   startup_script_id  = "${vultr_startup_script.ipxe.id}"
   private_networking = true
   network_ids        = ["${vultr_network.cluster.id}"]

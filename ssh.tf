@@ -1,5 +1,5 @@
-# Secure copy etcd TLS assets and kubeconfig to controllers. Activates kubelet.service
-resource "null_resource" "copy-controller-secrets" {
+# Secure copy etcd TLS assets to controllers.
+resource "null_resource" "copy_controller_secrets" {
   count = "${var.controller_count}"
 
   connection {
@@ -7,11 +7,6 @@ resource "null_resource" "copy-controller-secrets" {
     host    = "${element(vultr_instance.controllers.*.ipv4_address, count.index)}"
     user    = "core"
     timeout = "60m"
-  }
-
-  provisioner "file" {
-    content     = "${module.bootkube.kubeconfig}"
-    destination = "$HOME/kubeconfig"
   }
 
   provisioner "file" {
@@ -61,45 +56,18 @@ resource "null_resource" "copy-controller-secrets" {
       "sudo mv etcd-peer.key /etc/ssl/etcd/etcd/peer.key",
       "sudo chown -R etcd:etcd /etc/ssl/etcd",
       "sudo chmod -R 500 /etc/ssl/etcd",
-      "sudo mv $HOME/kubeconfig /etc/kubernetes/kubeconfig",
-    ]
-  }
-}
-
-# Secure copy kubeconfig to all workers. Activates kubelet.service
-resource "null_resource" "copy-worker-secrets" {
-  count = "${var.worker_count}"
-
-  connection {
-    type    = "ssh"
-    host    = "${element(vultr_instance.workers.*.ipv4_address, count.index)}"
-    user    = "core"
-    timeout = "60m"
-  }
-
-  provisioner "file" {
-    content     = "${module.bootkube.kubeconfig}"
-    destination = "$HOME/kubeconfig"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo mv $HOME/kubeconfig /etc/kubernetes/kubeconfig",
     ]
   }
 }
 
 # Secure copy bootkube assets to ONE controller and start bootkube to perform
 # one-time self-hosted cluster bootstrapping.
-resource "null_resource" "bootkube-start" {
-  # Without depends_on, this remote-exec may start before the kubeconfig copy.
-  # Terraform only does one task at a time, so it would try to bootstrap
-  # while no Kubelets are running.
+resource "null_resource" "bootkube_start" {
   depends_on = [
     "module.bootkube",
+    "module.workers",
     "vultr_dns_record.apiserver",
-    "null_resource.copy-controller-secrets",
-    "null_resource.copy-worker-secrets",
+    "null_resource.copy_controller_secrets",
   ]
 
   connection {

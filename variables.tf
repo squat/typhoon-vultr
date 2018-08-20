@@ -3,7 +3,7 @@ variable "cluster_name" {
   description = "Unique cluster name"
 }
 
-# vultr
+# Vultr
 
 variable "region" {
   type        = "string"
@@ -12,7 +12,7 @@ variable "region" {
 
 variable "dns_zone" {
   type        = "string"
-  description = "AWS Route53 DNS Zone (e.g. aws.example.com)"
+  description = "Vultr DNS Zone (e.g. vultr.example.com)"
 }
 
 # instances
