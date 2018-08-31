@@ -4,7 +4,7 @@ module "bootkube" {
 
   cluster_name          = "${var.cluster_name}"
   api_servers           = ["${format("%s-api.%s", var.cluster_name, var.dns_zone)}"]
-  etcd_servers          = ["${null_resource.repeat.*.triggers.domain}"]
+  etcd_servers          = ["${formatlist("%s.%s", vultr_dns_record.etcds.*.name, var.dns_zone)}"]
   asset_dir             = "${var.asset_dir}"
   networking            = "${var.networking}"
   network_mtu           = "${var.network_mtu}"
