@@ -8,12 +8,21 @@ resource "vultr_dns_record" "workers" {
   ttl    = 300
 }
 
-resource "vultr_dns_record" "ingress" {
+resource "vultr_dns_record" "ingress-a" {
   count  = "${var.count}"
   domain = "${var.dns_zone}"
   name   = "${var.name}"
   type   = "A"
   data   = "${element(vultr_instance.workers.*.ipv4_address, count.index)}"
+  ttl    = 300
+}
+
+resource "vultr_dns_record" "ingress-aaaa" {
+  count  = "${var.count}"
+  domain = "${var.dns_zone}"
+  name   = "${var.name}"
+  type   = "AAAA"
+  data   = "${element(vultr_instance.workers.*.ipv6_addresses[count.index], 0)}"
   ttl    = 300
 }
 
@@ -31,6 +40,7 @@ resource "vultr_instance" "workers" {
   startup_script_id  = "${var.startup_script_id}"
   private_networking = true
   network_ids        = ["${var.network_id}"]
+  ipv6               = true
 }
 
 # Hack to make a list of values from a list of maps

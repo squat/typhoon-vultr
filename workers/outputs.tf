@@ -1,5 +1,5 @@
 output "ingress_dns_name" {
-  value       = "${vultr_dns_record.ingress.0.name}.${var.dns_zone}"
+  value       = "${vultr_dns_record.ingress-a.0.name}.${var.dns_zone}"
   description = "DNS name for distributing traffic to Ingress controllers"
 }
 

@@ -18,12 +18,21 @@ resource "vultr_dns_record" "controllers" {
   ttl    = 300
 }
 
-resource "vultr_dns_record" "apiserver" {
+resource "vultr_dns_record" "apiserver-a" {
   count  = "${var.controller_count}"
   domain = "${var.dns_zone}"
   name   = "${format("%s-api", var.cluster_name)}"
   type   = "A"
   data   = "${element(vultr_instance.controllers.*.ipv4_address, count.index)}"
+  ttl    = 300
+}
+
+resource "vultr_dns_record" "apiserver-aaaa" {
+  count  = "${var.controller_count}"
+  domain = "${var.dns_zone}"
+  name   = "${format("%s-api", var.cluster_name)}"
+  type   = "AAAA"
+  data   = "${element(vultr_instance.controllers.*.ipv6_addresses[count.index], 0)}"
   ttl    = 300
 }
 
@@ -42,6 +51,7 @@ resource "vultr_instance" "controllers" {
   startup_script_id  = "${vultr_startup_script.ipxe.id}"
   private_networking = true
   network_ids        = ["${vultr_network.cluster.id}"]
+  ipv6               = true
 }
 
 # Find the ID for installing a custom ISO

@@ -66,7 +66,7 @@ resource "null_resource" "bootkube_start" {
   depends_on = [
     "module.bootkube",
     "module.workers",
-    "vultr_dns_record.apiserver",
+    "vultr_dns_record.apiserver-a",
     "null_resource.copy_controller_secrets",
   ]
 
