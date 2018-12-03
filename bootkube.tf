@@ -7,7 +7,7 @@ module "bootkube" {
   etcd_servers          = ["${formatlist("%s.%s", vultr_dns_record.etcds.*.name, var.dns_zone)}"]
   asset_dir             = "${var.asset_dir}"
   networking            = "${var.networking}"
-  network_mtu           = "${var.network_mtu}"
+  network_mtu           = 1430
   pod_cidr              = "${var.pod_cidr}"
   service_cidr          = "${var.service_cidr}"
   cluster_domain_suffix = "${var.cluster_domain_suffix}"

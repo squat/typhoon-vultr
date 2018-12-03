@@ -75,12 +75,6 @@ variable "networking" {
   default     = "calico"
 }
 
-variable "network_mtu" {
-  description = "CNI interface MTU (applies to calico only)"
-  type        = "string"
-  default     = "1480"
-}
-
 variable "network_ip_autodetection_method" {
   description = "Method to autodetect the host IPv4 address (applies to calico only)"
   type        = "string"
