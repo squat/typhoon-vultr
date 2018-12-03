@@ -8,13 +8,13 @@ resource "vultr_dns_record" "etcds" {
   ttl    = 300
 }
 
-# Discrete DNS records for each controller's public IPv4
+# Discrete DNS records for each controller's private IPv4 for cluster usage
 resource "vultr_dns_record" "controllers" {
   count  = "${var.controller_count}"
   domain = "${var.dns_zone}"
   name   = "${format("%s-controller%d", var.cluster_name, count.index)}"
   type   = "A"
-  data   = "${element(vultr_instance.controllers.*.ipv4_address, count.index)}"
+  data   = "${lookup(vultr_instance.controllers.*.networks[count.index], vultr_network.cluster.id)}"
   ttl    = 300
 }
 
