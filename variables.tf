@@ -100,9 +100,15 @@ EOD
 # optional
 
 variable "cluster_domain_suffix" {
-  description = "Queries for domains with the suffix will be answered by coredns. Default is cluster.local (e.g. foo.default.svc.cluster.local) "
+  description = "Queries for domains with the suffix will be answered by coredns. Default is cluster.local (e.g. foo.default.svc.cluster.local)"
   type        = "string"
   default     = "cluster.local"
+}
+
+variable "enable_reporting" {
+  type        = "string"
+  description = "Enable usage or analytics reporting to upstreams (Calico)"
+  default     = "false"
 }
 
 variable "install_disk" {
@@ -112,7 +118,7 @@ variable "install_disk" {
 }
 
 variable "kernel_args" {
-  description = "Additional kernel arguments to provide at PXE boot."
+  description = "Additional kernel arguments to provide at PXE boot"
   type        = "list"
   default     = []
 }
