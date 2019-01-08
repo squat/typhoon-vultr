@@ -1,3 +1,7 @@
+output "kubeconfig-admin" {
+  value = "${module.bootkube.user-kubeconfig}"
+}
+
 output "ingress_dns_name" {
   value       = "${module.workers.ingress_dns_name}"
   description = "DNS name for distributing traffic to Ingress controllers"
