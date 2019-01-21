@@ -1,5 +1,5 @@
 output "kubeconfig-admin" {
-  value = "${module.bootkube.user-kubeconfig}"
+  value = "${module.bootkube.kubeconfig-admin-context}"
 }
 
 output "ingress_dns_name" {
@@ -8,7 +8,7 @@ output "ingress_dns_name" {
 }
 
 output "kubeconfig" {
-  value       = "${module.bootkube.kubeconfig}"
+  value       = "${module.bootkube.kubeconfig-kubelet}"
   description = "Cluster Kubeconfig"
 }
 

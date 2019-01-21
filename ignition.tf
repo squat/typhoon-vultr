@@ -67,7 +67,7 @@ data "template_file" "controller_configs" {
     # etcd0=https://cluster-etcd0.example.com,etcd1=https://cluster-etcd1.example.com,...
     etcd_initial_cluster  = "${join(",", data.template_file.etcds.*.rendered)}"
     k8s_dns_service_ip    = "${module.bootkube.cluster_dns_service_ip}"
-    kubeconfig            = "${indent(10, module.bootkube.kubeconfig)}"
+    kubeconfig            = "${indent(10, module.bootkube.kubeconfig-kubelet)}"
     cluster_domain_suffix = "${var.cluster_domain_suffix}"
     ssh_authorized_key    = "${var.ssh_authorized_key}"
     network_prefix        = "${element(split("/", vultr_network.cluster.cidr_block), 1)}"
