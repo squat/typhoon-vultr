@@ -43,12 +43,12 @@ data "template_file" "worker_configs" {
 
   vars {
     # Cannot use cyclic dependencies on workers or their DNS records
-    domain_name           = "${var.name}-worker${count.index}.${var.dns_zone}"
-    k8s_dns_service_ip    = "${cidrhost(var.service_cidr, 10)}"
-    kubeconfig            = "${indent(10, var.kubeconfig)}"
-    cluster_domain_suffix = "${var.cluster_domain_suffix}"
-    ssh_authorized_key    = "${var.ssh_authorized_key}"
-    network_prefix        = "${element(split("/", data.vultr_network.cluster.cidr_block), 1)}"
+    domain_name            = "${var.name}-worker${count.index}.${var.dns_zone}"
+    cluster_dns_service_ip = "${cidrhost(var.service_cidr, 10)}"
+    kubeconfig             = "${indent(10, var.kubeconfig)}"
+    cluster_domain_suffix  = "${var.cluster_domain_suffix}"
+    ssh_authorized_key     = "${var.ssh_authorized_key}"
+    network_prefix         = "${element(split("/", data.vultr_network.cluster.cidr_block), 1)}"
   }
 }
 
