@@ -1,5 +1,5 @@
 output "kubeconfig-admin" {
-  value = "${module.bootkube.kubeconfig-admin-context}"
+  value = "${module.bootkube.kubeconfig-admin}"
 }
 
 output "ingress_dns_name" {
