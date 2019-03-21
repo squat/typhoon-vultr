@@ -20,7 +20,7 @@ data "template_file" "container_linux_install_configs" {
 
   template = "${file("${path.module}/cl/install.yaml.tmpl")}"
 
-  vars {
+  vars = {
     os_flavor          = "${local.flavor}"
     os_channel         = "${local.channel}"
     ignition           = "${element(data.ct_config.worker_ignitions.*.rendered, count.index)}"
@@ -41,7 +41,7 @@ data "template_file" "worker_configs" {
 
   template = "${file("${path.module}/cl/worker.yaml.tmpl")}"
 
-  vars {
+  vars = {
     # Cannot use cyclic dependencies on workers or their DNS records
     domain_name            = "${var.name}-worker${count.index}.${var.dns_zone}"
     cluster_dns_service_ip = "${cidrhost(var.service_cidr, 10)}"

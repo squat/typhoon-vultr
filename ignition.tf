@@ -17,7 +17,7 @@ resource "vultr_startup_script" "ipxe" {
 data "template_file" "ipxe" {
   template = "${file("${path.module}/cl/ipxe.tmpl")}"
 
-  vars {
+  vars = {
     initrd      = "${local.baseurl}/${local.flavor}_production_pxe_image.cpio.gz"
     kernel      = "${local.baseurl}/${local.flavor}_production_pxe.vmlinuz"
     kernel_args = "${join(" ", var.kernel_args)}"
@@ -37,7 +37,7 @@ data "template_file" "controller_container_linux_install_configs" {
 
   template = "${file("${path.module}/cl/install.yaml.tmpl")}"
 
-  vars {
+  vars = {
     os_flavor          = "${local.flavor}"
     os_channel         = "${local.channel}"
     ignition           = "${element(data.ct_config.controller_ignitions.*.rendered, count.index)}"
@@ -58,7 +58,7 @@ data "template_file" "controller_configs" {
 
   template = "${file("${path.module}/cl/controller.yaml.tmpl")}"
 
-  vars {
+  vars = {
     # Cannot use cyclic dependencies on controllers or their DNS records
     domain_name = "${var.cluster_name}-controller${count.index}.${var.dns_zone}"
     etcd_name   = "etcd${count.index}"
@@ -78,7 +78,7 @@ data "template_file" "etcds" {
   count    = "${var.controller_count}"
   template = "etcd$${index}=https://$${cluster_name}-etcd$${index}.$${dns_zone}:2380"
 
-  vars {
+  vars = {
     index        = "${count.index}"
     cluster_name = "${var.cluster_name}"
     dns_zone     = "${var.dns_zone}"
