@@ -5,7 +5,7 @@ locals {
 
   channel = "${element(split("-", var.os_image), 1)}"
 
-  baseurl = "${local.flavor == "coreos" ? "http://${local.channel}.release.core-os.net/amd64-usr/current" : "http://${local.channel}.release.flatcar-linux.net/amd64-usr/current"}"
+  baseurl = "${local.flavor == "coreos" ? "${var.download_protocol}://${local.channel}.release.core-os.net/amd64-usr/current" : "${var.download_protocol}://${local.channel}.release.flatcar-linux.net/amd64-usr/current"}"
 }
 
 resource "vultr_startup_script" "ipxe" {
