@@ -117,6 +117,12 @@ variable "enable_reporting" {
   default     = "false"
 }
 
+variable "enable_aggregation" {
+  description = "Enable the Kubernetes Aggregation Layer (defaults to false)"
+  type        = "string"
+  default     = "false"
+}
+
 variable "install_disk" {
   type        = "string"
   default     = "/dev/vda"
