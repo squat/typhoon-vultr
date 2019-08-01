@@ -42,7 +42,7 @@ variable "worker_type" {
 variable "os_image" {
   type        = string
   default     = "coreos-stable"
-  description = "Container Linux derivative image (coreos-stable, coreos-beta, coreos-alpha, flatcar-stable, flatcar-beta, flatcar-alpha)"
+  description = "Container Linux derivative image (coreos-stable, coreos-beta, coreos-alpha, flatcar-stable, flatcar-beta, flatcar-alpha, flatcar-edge)"
 }
 
 variable "controller_clc_snippets" {
