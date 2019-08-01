@@ -59,18 +59,18 @@ data "template_file" "controller_configs" {
   template = file("${path.module}/cl/controller.yaml.tmpl")
 
   vars = {
+    cgroup_driver          = var.os_image == "flatcar-edge" ? "systemd" : "cgroupfs"
+    cluster_domain_suffix  = var.cluster_domain_suffix
+    cluster_dns_service_ip = module.bootkube.cluster_dns_service_ip
     # Cannot use cyclic dependencies on controllers or their DNS records
     domain_name = "${var.cluster_name}-controller${count.index}.${var.dns_zone}"
     etcd_name   = "etcd${count.index}"
     etcd_domain = "${var.cluster_name}-etcd${count.index}.${var.dns_zone}"
-
     # etcd0=https://cluster-etcd0.example.com,etcd1=https://cluster-etcd1.example.com,...
-    etcd_initial_cluster   = join(",", data.template_file.etcds.*.rendered)
-    cluster_dns_service_ip = module.bootkube.cluster_dns_service_ip
-    kubeconfig             = indent(10, module.bootkube.kubeconfig-kubelet)
-    cluster_domain_suffix  = var.cluster_domain_suffix
-    ssh_authorized_key     = var.ssh_authorized_key
-    network_prefix         = element(split("/", vultr_network.cluster.cidr_block), 1)
+    etcd_initial_cluster = join(",", data.template_file.etcds.*.rendered)
+    kubeconfig           = indent(10, module.bootkube.kubeconfig-kubelet)
+    network_prefix       = element(split("/", vultr_network.cluster.cidr_block), 1)
+    ssh_authorized_key   = var.ssh_authorized_key
   }
 }
 
