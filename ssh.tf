@@ -1,46 +1,46 @@
 # Secure copy etcd TLS assets to controllers.
 resource "null_resource" "copy_controller_secrets" {
-  count = "${var.controller_count}"
+  count = var.controller_count
 
   connection {
     type    = "ssh"
-    host    = "${element(vultr_instance.controllers.*.ipv4_address, count.index)}"
+    host    = element(vultr_instance.controllers.*.ipv4_address, count.index)
     user    = "core"
     timeout = "60m"
   }
 
   provisioner "file" {
-    content     = "${module.bootkube.etcd_ca_cert}"
+    content     = module.bootkube.etcd_ca_cert
     destination = "$HOME/etcd-client-ca.crt"
   }
 
   provisioner "file" {
-    content     = "${module.bootkube.etcd_client_cert}"
+    content     = module.bootkube.etcd_client_cert
     destination = "$HOME/etcd-client.crt"
   }
 
   provisioner "file" {
-    content     = "${module.bootkube.etcd_client_key}"
+    content     = module.bootkube.etcd_client_key
     destination = "$HOME/etcd-client.key"
   }
 
   provisioner "file" {
-    content     = "${module.bootkube.etcd_server_cert}"
+    content     = module.bootkube.etcd_server_cert
     destination = "$HOME/etcd-server.crt"
   }
 
   provisioner "file" {
-    content     = "${module.bootkube.etcd_server_key}"
+    content     = module.bootkube.etcd_server_key
     destination = "$HOME/etcd-server.key"
   }
 
   provisioner "file" {
-    content     = "${module.bootkube.etcd_peer_cert}"
+    content     = module.bootkube.etcd_peer_cert
     destination = "$HOME/etcd-peer.crt"
   }
 
   provisioner "file" {
-    content     = "${module.bootkube.etcd_peer_key}"
+    content     = module.bootkube.etcd_peer_key
     destination = "$HOME/etcd-peer.key"
   }
 
@@ -64,21 +64,21 @@ resource "null_resource" "copy_controller_secrets" {
 # one-time self-hosted cluster bootstrapping.
 resource "null_resource" "bootkube_start" {
   depends_on = [
-    "module.bootkube",
-    "module.workers",
-    "vultr_dns_record.apiserver-a",
-    "null_resource.copy_controller_secrets",
+    module.bootkube,
+    module.workers,
+    vultr_dns_record.apiserver-a,
+    null_resource.copy_controller_secrets,
   ]
 
   connection {
     type    = "ssh"
-    host    = "${vultr_instance.controllers.0.ipv4_address}"
+    host    = vultr_instance.controllers.0.ipv4_address
     user    = "core"
     timeout = "15m"
   }
 
   provisioner "file" {
-    source      = "${var.asset_dir}"
+    source      = var.asset_dir
     destination = "$HOME/assets"
   }
 

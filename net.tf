@@ -1,15 +1,15 @@
 resource "vultr_network" "cluster" {
-  description = "${var.cluster_name}"
-  region_id   = "${var.region}"
+  description = var.cluster_name
+  region_id   = var.region
 }
 
 resource "vultr_firewall_group" "cluster" {
-  description = "${var.cluster_name}"
+  description = var.cluster_name
 }
 
 # Add a firewall rule to the group allowing API access
 resource "vultr_firewall_rule" "api" {
-  firewall_group_id = "${vultr_firewall_group.cluster.id}"
+  firewall_group_id = vultr_firewall_group.cluster.id
   cidr_block        = "0.0.0.0/0"
   protocol          = "tcp"
   from_port         = 6443
@@ -18,7 +18,7 @@ resource "vultr_firewall_rule" "api" {
 
 # Add a firewall rule to the group allowing SSH access
 resource "vultr_firewall_rule" "ssh" {
-  firewall_group_id = "${vultr_firewall_group.cluster.id}"
+  firewall_group_id = vultr_firewall_group.cluster.id
   cidr_block        = "0.0.0.0/0"
   protocol          = "tcp"
   from_port         = 22
@@ -27,7 +27,7 @@ resource "vultr_firewall_rule" "ssh" {
 
 # Add a firewall rule to the group allowing HTTPS access
 resource "vultr_firewall_rule" "https" {
-  firewall_group_id = "${vultr_firewall_group.cluster.id}"
+  firewall_group_id = vultr_firewall_group.cluster.id
   cidr_block        = "0.0.0.0/0"
   protocol          = "tcp"
   from_port         = 443
@@ -36,7 +36,7 @@ resource "vultr_firewall_rule" "https" {
 
 # Add a firewall rule to the group allowing HTTP access.
 resource "vultr_firewall_rule" "http" {
-  firewall_group_id = "${vultr_firewall_group.cluster.id}"
+  firewall_group_id = vultr_firewall_group.cluster.id
   cidr_block        = "0.0.0.0/0"
   protocol          = "tcp"
   from_port         = 80
@@ -45,7 +45,7 @@ resource "vultr_firewall_rule" "http" {
 
 # Add a firewall rule to the group allowing ICMP.
 resource "vultr_firewall_rule" "icmp" {
-  firewall_group_id = "${vultr_firewall_group.cluster.id}"
+  firewall_group_id = vultr_firewall_group.cluster.id
   cidr_block        = "0.0.0.0/0"
   protocol          = "icmp"
 }
