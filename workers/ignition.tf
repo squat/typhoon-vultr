@@ -9,14 +9,14 @@ locals {
 }
 
 data "ct_config" "container_linux_install_configs" {
-  count = "${var.count}"
+  count = "${var.worker_count}"
 
   pretty_print = false
   content      = "${element(data.template_file.container_linux_install_configs.*.rendered, count.index)}"
 }
 
 data "template_file" "container_linux_install_configs" {
-  count = "${var.count}"
+  count = "${var.worker_count}"
 
   template = "${file("${path.module}/cl/install.yaml.tmpl")}"
 
@@ -30,14 +30,14 @@ data "template_file" "container_linux_install_configs" {
 }
 
 data "ct_config" "worker_ignitions" {
-  count        = "${var.count}"
+  count        = "${var.worker_count}"
   content      = "${element(data.template_file.worker_configs.*.rendered, count.index)}"
   pretty_print = false
   snippets     = ["${var.clc_snippets}"]
 }
 
 data "template_file" "worker_configs" {
-  count = "${var.count}"
+  count = "${var.worker_count}"
 
   template = "${file("${path.module}/cl/worker.yaml.tmpl")}"
 

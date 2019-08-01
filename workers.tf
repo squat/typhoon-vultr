@@ -7,7 +7,7 @@ module "workers" {
   dns_zone          = "${var.dns_zone}"
   network_id        = "${vultr_network.cluster.id}"
   firewall_group_id = "${vultr_firewall_group.cluster.id}"
-  count             = "${var.worker_count}"
+  worker_count      = "${var.worker_count}"
   type              = "${var.worker_type}"
   os_image          = "${var.os_image}"
   startup_script_id = "${vultr_startup_script.ipxe.id}"

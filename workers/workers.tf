@@ -1,6 +1,6 @@
 # Discrete DNS records for each worker's private IPv4
 resource "vultr_dns_record" "workers" {
-  count  = "${var.count}"
+  count  = "${var.worker_count}"
   domain = "${var.dns_zone}"
   name   = "${format("%s-worker%d", var.name, count.index)}"
   type   = "A"
@@ -9,7 +9,7 @@ resource "vultr_dns_record" "workers" {
 }
 
 resource "vultr_dns_record" "ingress-a" {
-  count  = "${var.count}"
+  count  = "${var.worker_count}"
   domain = "${var.dns_zone}"
   name   = "${var.name}"
   type   = "A"
@@ -18,7 +18,7 @@ resource "vultr_dns_record" "ingress-a" {
 }
 
 resource "vultr_dns_record" "ingress-aaaa" {
-  count  = "${var.count}"
+  count  = "${var.worker_count}"
   domain = "${var.dns_zone}"
   name   = "${var.name}"
   type   = "AAAA"
@@ -28,7 +28,7 @@ resource "vultr_dns_record" "ingress-aaaa" {
 
 # Worker instances
 resource "vultr_instance" "workers" {
-  count              = "${var.count}"
+  count              = "${var.worker_count}"
   name               = "${var.name}-worker-${count.index}"
   hostname           = "${var.name}-worker-${count.index}"
   region_id          = "${var.region}"
@@ -45,7 +45,7 @@ resource "vultr_instance" "workers" {
 
 # Hack to make a list of values from a list of maps
 data "template_file" "private_ipv4_addresses" {
-  count    = "${length(var.count)}"
+  count    = "${length(var.worker_count)}"
   template = "${lookup(vultr_instance.workers.*.networks[count.index], var.network_id)}"
 }
 
